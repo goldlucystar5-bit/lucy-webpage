@@ -1,0 +1,32 @@
+services:
+
+  web:
+    build: ./php  #check the php version for the project
+    ports:
+      - "8081:80"
+    depends_on:
+      - db    #links the container to the db container
+    volumes:
+      - ./html:/var/www/html    #this line map the content of ./html to the /var/ww/html of the container
+
+  db:
+    image: mysql:8.1.0    #check the mysql version need for the project
+    environment:
+      MYSQL_ROOT_PASSWORD: ticketpass   
+      MYSQL_DATABASE: support_ticketing
+      MYSQL_USER: ticket_user
+      MYSQL_PASSWORD: ticketpass
+    volumes:
+      - ./mysql_data:/var/lib/mysql   #this line maps the content of ./mysql_data in the pc to the /var/lib/mysql of the container
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    platform: linux/amd64
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ticketpass
+    ports:
+      - "8082:80"
